@@ -1,0 +1,11 @@
+version: '3.11'
+
+services:
+  app:
+    build: .
+    ports:
+      - "${PORT}:8501"
+    env_file:
+      - .env
+    volumes:
+      - .:/app
