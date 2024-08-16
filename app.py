@@ -23,7 +23,7 @@ class GraphState(TypedDict):
     
 
 
-st.set_page_config(page_title='AI Market Researcher', page_icon="books")
+st.set_page_config(page_title='AI Market Researcher', page_icon="👨🏻‍💻")
 
 
 # Define the nodes
