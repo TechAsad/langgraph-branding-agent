@@ -23,6 +23,9 @@ class GraphState(TypedDict):
     
 
 
+st.set_page_config(page_title='AI Market Researcher', page_icon=":material/favorite:")
+
+
 # Define the nodes
 def subreddit_to_search(state):
     print(colored("---POSSIBLE SUB REDDITS---", 'green'))
