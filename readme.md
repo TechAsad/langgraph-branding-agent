@@ -9,7 +9,6 @@ This application is a Branding Agent AI that helps generate branding strategies 
 - Collect product details for personalized branding.
 - Generate branding strategies based on the input.
 - Display generated branding for user review.
-- Allow user input for refining product details.
 - Download branding strategies as a text file.
 
 ## Getting Started

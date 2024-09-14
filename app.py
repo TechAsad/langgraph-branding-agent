@@ -32,6 +32,10 @@ class GraphState(TypedDict):
 
 st.set_page_config(page_title='Branding Agent', page_icon="technologist")
 
+st.title("Branding Agent")
+
+st.write("This application is a Branding Agent AI that helps generate branding strategies based on input product details. It guides users through the branding process, providing outputs such as product descriptions and branding messages tailored to the user’s needs.")
+
 
 # Define the nodes
 
@@ -187,7 +191,7 @@ if "product" and "branding" not in st.session_state:
 import streamlit as st
 
 def main():
-    st.title("Branding Agent")
+    
 
     # Step 1: Gather Product Information
     st.header("Enter Product Details")
