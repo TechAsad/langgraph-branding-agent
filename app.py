@@ -201,7 +201,7 @@ def main():
     product_service = st.text_input("Product or Service", value=st.session_state.get('product_service', ''))
     industry = st.text_input("Industry", value=st.session_state.get('industry', ''))
     problem_solved = st.text_input("Problem Solved", value=st.session_state.get('problem_solved', ''))
-    competition_website = st.text_input("Competition Website", value=st.session_state.get('competition_website', ''))
+    competition_website = st.text_input("Competition Website (optional)", value=st.session_state.get('competition_website', ''))
 
     # Check if the product details have changed
     details_changed = (
@@ -214,7 +214,7 @@ def main():
 
     # Validate the input
     if st.button("GENERATE"):
-        if not (product_name and product_service and industry and problem_solved and competition_website):
+        if not (product_name and product_service and industry and problem_solved):
             st.error("Please provide all required information.")
         else:
             # Store product details in session state
