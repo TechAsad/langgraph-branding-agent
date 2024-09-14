@@ -1,22 +1,22 @@
-# Market Researcher AI Application
+Here's your updated README for the **Branding Agent** application:
 
-This application is a Market Researcher AI that helps generate marketing strategies, campaigns, and landing pages based on the input product details. It guides users through various stages of market research, providing outputs at each step and allowing user interaction to refine the results.
+# Branding Agent AI Application
+
+This application is a Branding Agent AI that helps generate branding strategies based on input product details. It guides users through the branding process, providing outputs such as product descriptions and branding messages tailored to the user’s needs.
 
 ## Features
 
-- Identify potential subreddits for market research.
-- Select relevant subreddits for scraping.
-- Generate market research reports.
-- Develop marketing strategies.
-- Allow user input to choose the target audience.
-- Create marketing campaigns.
-- Generate landing pages based on the campaign.
+- Collect product details for personalized branding.
+- Generate branding strategies based on the input.
+- Display generated branding for user review.
+- Allow user input for refining product details.
+- Download branding strategies as a text file.
 
 ## Getting Started
 
 ### Prerequisites
 
-- Python 3.11
+- Python 3.10
 - Streamlit
 - Docker (for Docker-based setup)
 
@@ -24,51 +24,58 @@ This application is a Market Researcher AI that helps generate marketing strateg
 
 #### Clone the Repository
 
+```sh
+git clone https://github.com/yourusername/branding-agent-ai.git
+cd branding-agent-ai
+```
 
-## crate your env file in the same folder (.env)
+### Create your environment file in the same folder (.env)
 
+```txt
 OPENAI_API_KEY= 
 SERPER_API_KEY= 
 TAVILY_API_KEY=
+```
 
-
+### With Docker
 
 ```sh
-git clone https://github.com/yourusername/market-researcher-ai.git
-cd market-researcher-ai
-
-## With Docker ###
-docker build -t market-research-app .
-
+docker build -t branding-agent-app .
 docker-compose up --build
-
-## Without Docker ###
-
-##Create and activate a virtual environment:
-python -m venv venv
-source venv/bin/activate  # On Windows use `venv\Scripts\activate`
-
-pip install -r requirements.txt
-streamlit run app.py
-
-##Open your web browser and navigate to http://localhost:8501 to access the app.
-
 ```
 
+### Without Docker
+
+1. **Create and activate a virtual environment:**
+   ```sh
+   python -m venv venv
+   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+   ```
+
+2. **Install dependencies:**
+   ```sh
+   pip install -r requirements.txt
+   ```
+
+3. **Run the app:**
+   ```sh
+   streamlit run app.py
+   ```
+
+4. **Access the app:**
+   Open your web browser and navigate to [http://localhost:8501](http://localhost:8501) to access the app.
 
 ## Application Workflow
-```
-Enter Product Details: The user inputs the product details.
 
-Subreddit Selection: The application suggests possible subreddits related to the product and allows the user to select relevant ones.
+1. **Enter Product Details:**  
+   The user inputs the product name, service, industry, problem solved, and competition website.
 
-Market Research: The app scrapes comments from the selected subreddits and generates a market research report.
+2. **Branding Strategy Generation:**  
+   Based on the provided product details, the app generates a personalized branding strategy.
 
-Marketing Strategy: Based on the market research, the app creates a marketing strategy.
+3. **Display Product and Branding Details:**  
+   The generated branding strategy is displayed for user review, along with the input product details.
 
-Select Target Audience: The user selects the target audience from the suggested options.
+4. **Download Branding Strategy:**  
+   Users can download the generated branding strategy as a text file for future use.
 
-Campaign Creation: The app generates a marketing campaign for the selected audience.
-
-Landing Page Generation: The final step is generating a landing page based on the campaign.
-```

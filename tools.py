@@ -2,8 +2,23 @@ import praw
 import pandas as pd
 
 import os
-
+import re
 from dotenv import load_dotenv
+
+
+import json
+
+import requests
+from bs4 import BeautifulSoup
+from urllib.parse import urljoin, urlparse
+import time
+
+from fake_useragent import UserAgent
+import pandas as pd
+
+import asyncio
+
+
 load_dotenv()
 
 # Replace with your Reddit app credentials
@@ -73,7 +88,7 @@ def scrape_reddit_comments(subreddits):
             continue
         for post in top_posts:
             comments = get_comments_from_post(post)
-            sub_comments= comments[:100]
+            sub_comments= comments[:80]
             all_comments.extend(sub_comments)
     
     if failed_subreddits:
@@ -91,9 +106,8 @@ def reddit_comments(sub_reddits):
     print(f"Total comments scraped: {len(comments)}")
     
     if comments:
-        df = pd.DataFrame(comments, columns=['Comment'])
-        df.to_csv(output_file, index=False)
-        print(f"Comments for {subreddits} scraped and saved to {output_file}")
+       
+        print(f"Comments for {subreddits} scraped")
     else:
         print("No comments scraped from {subreddits}.")
     return comments
@@ -110,7 +124,7 @@ def filter_comments(comments):
     unwanted_keywords = ['https']
     # Filter out comments containing unwanted keywords and comments with less than 4 words
     filtered_comments = []
-    for comment in comments:
+    for comment in comments[:250]:
         if len(comment.split()) >= 4 and not any(keyword.lower() in comment.lower() for keyword in unwanted_keywords):
             filtered_comments.append(comment)
 
@@ -131,3 +145,111 @@ def filter_comments(comments):
     
     return unique_comments
 
+
+
+def detect_and_scrape_url(message):
+    # Regular expression to detect URLs
+    url_pattern = re.compile(r'(https?://[^\s]+)')
+    
+    # Search for URLs in the message
+    match = url_pattern.search(message)
+
+    # Check if a URL was found
+    if match:
+        url = match.group(0)
+        
+        # Check if the URL has already been scraped
+        
+        print(f"\nScraping {url}")
+        website_text = get_links_and_text(url)
+        # Store the scraped content
+        
+    
+        result = {"URL": url, "text": website_text}
+    else:
+        result = {}
+
+    # Convert to JSON format
+    result_json = json.dumps(result)
+    print(result_json)
+    return result_json
+
+
+
+
+def get_random_user_agent():
+    ua = UserAgent()
+    return ua.random
+
+def extract_url(web_str):
+    # Use regular expression to find the URL
+    url_match = re.search(r'http[s]?://\S+', web_str)
+    if url_match:
+        return url_match.group()
+    else:
+        return None
+
+def scrape_new_website(url: str, base_domain: str, max_retries: int = 3, backoff_factor: float = 0.3, timeout: int = 10) -> dict:
+    headers = {'User-Agent': get_random_user_agent()}
+    session = requests.Session()
+    # Extract the URL
+    url = extract_url(url)
+    for attempt in range(max_retries):
+        try:
+            response = session.get(url, headers=headers, timeout=timeout)
+            response.raise_for_status()
+            
+            soup = BeautifulSoup(response.content, 'html.parser')
+            
+            # Remove script and style elements
+            for script in soup(["script", "style"]):
+                script.decompose()
+            
+            # Get text content
+            text = soup.get_text(separator=' ', strip=True)
+            
+            # Basic content cleaning
+            lines = (line.strip() for line in text.splitlines())
+            chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
+            text = 'joined '.join(chunk for chunk in chunks if chunk)
+            
+            # Extract links within the same domain
+            links = [urljoin(url, a.get('href')) for a in soup.find_all('a', href=True)]
+            sublinks = [link for link in links if urlparse(link).netloc == base_domain]
+            
+            print(len(sublinks))
+            return {
+                "source": url,
+                "content": text,
+                "links": sublinks[:1]
+            }
+        
+        except requests.RequestException as e:
+            if attempt == max_retries - 1:
+                return {
+                    "source": url,
+                    "error": f"Failed to scrape website after {max_retries} attempts: {str(e)}"
+                }
+            else:
+                time.sleep(backoff_factor * (2 ** attempt))
+                continue
+
+def get_links_and_text(url: str, max_depth: int = 1, max_retries: int = 3, backoff_factor: float = 0.3, timeout: int = 10):
+    visited_urls = set()
+    results = []
+
+    def scrape_recursive(url: str, depth: int):
+        if depth > max_depth or url in visited_urls:
+            return
+
+        visited_urls.add(url)
+        base_domain = urlparse(url).netloc
+        result = scrape_new_website(url, base_domain, max_retries, backoff_factor, timeout)
+        
+        if "error" not in result:
+            results.append({"source": result["source"], "content": result["content"]})
+            for link in result.get("links", []):
+                scrape_recursive(link, depth + 1)
+
+    scrape_recursive(url, 0)
+    return results

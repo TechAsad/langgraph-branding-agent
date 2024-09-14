@@ -5,32 +5,34 @@ from node import *
 
 workflow = StateGraph(GraphState)
 
-# Define the nodes
+workflow.add_node("google_search", google_search)
 workflow.add_node("subreddit_to_search", subreddit_to_search)  # 
-workflow.add_node("subreddit_selector",subreddit_selector)  # 
+workflow.add_node("subreddit_selector",subreddit_selector) 
+workflow.add_node("web_summarizer",web_summarizer) # 
 workflow.add_node("market_researcher", market_researcher)
-workflow.add_node("market_strategist", market_strategist)  # 
-workflow.add_node("human_in_loop", human_in_loop)
-workflow.add_node("campaign_crafter",campaign_crafter)  # 
 
-workflow.add_node("landing_page_generator", landing_page_generator)
+workflow.add_node("strategist", strategist)  # 
 
 
-# Edges
-workflow.set_entry_point("subreddit_to_search")
+workflow.add_node("branding_creator",branding_creator)  # 
+
+
+
+
+workflow.set_entry_point("google_search")
+workflow.add_edge("google_search", "subreddit_to_search")
+
 workflow.add_edge("subreddit_to_search","subreddit_selector")
 
 
-workflow.add_edge("subreddit_selector","market_researcher")
-workflow.add_edge("market_researcher","market_strategist")
+workflow.add_edge("subreddit_selector","web_summarizer")
+workflow.add_edge("web_summarizer","market_researcher")
+workflow.add_edge("market_researcher","strategist")
 
-workflow.add_edge("market_strategist", "human_in_loop")
+workflow.add_edge("strategist", "branding_creator")
 
-workflow.add_edge("human_in_loop", "campaign_crafter")
 
-workflow.add_edge("campaign_crafter", "landing_page_generator")
-
-workflow.add_edge("landing_page_generator", END)
+workflow.add_edge("branding_creator", END)
 
 
 

@@ -15,6 +15,24 @@ from tools import * #reddit scraper and commeent claner
 ### Nodes
 
 
+def google_search(state):
+    #agency_type="AI Automation Agency"
+    
+    product = state["product"]
+    
+    print(colored(f"\n---GOOOGLE SEARCHER---", 'green'))
+    
+    results=serper_search(f"branding stratergies for {product} ")
+    print(results)
+    web_text = detect_and_scrape_url(results)
+    
+    google_summary_agent= web_summary_chain.invoke({"web_text":web_text, "product": product})
+    
+    return {"google_search_summary":google_summary_agent}
+
+#google_search(agency_type)
+
+
 def subreddit_to_search(state):
     """
     
@@ -51,6 +69,58 @@ def subreddit_selector(state):
     return {"sub_reddits_to_scrape": subreddit_searcher_agent}
 
 
+def detect_and_scrape_url(message):
+    # Regular expression to detect URLs
+    url_pattern = re.compile(r'(https?://[^\s]+)')
+    
+    # Search for URLs in the message
+    match = url_pattern.search(message)
+
+    # Check if a URL was found
+    if match:
+        url = match.group(0)
+        
+        # Check if the URL has already been scraped
+        
+        print(f"\nScraping {url}")
+        website_text = get_links_and_text(url)
+        # Store the scraped content
+        
+    
+        result = {"URL": url, "text": website_text}
+    else:
+        result = {}
+
+    # Convert to JSON format
+    result_json = json.dumps(result)
+    print(result_json)
+    return result_json
+
+
+
+def web_summarizer(state):
+    """
+    
+    """
+    
+    print(colored(f"\n---COMPETITION WEB SUMMARY---", 'green'))
+    
+    
+    
+    product = state["product"]
+    
+
+    # summary generation
+    web_text= detect_and_scrape_url(product)
+    
+    
+    web_summary_agent= web_summary_chain.invoke({"web_text":web_text, "product": product})
+    print(web_summary_agent[:300])
+    return { "web_summary": web_summary_agent}
+
+
+
+
 def market_researcher(state):
     """
     
@@ -66,108 +136,52 @@ def market_researcher(state):
     
     print(colored(f"\n---Filtering Comments---", 'blue'))
     
-    
     filtered_comments= filter_comments(comments)
     market_researcher_agent= market_researcher_chain.invoke({"filtered_comments":filtered_comments[:1000], "product": product})
- 
     return { "market_research": market_researcher_agent}
 
 
 
-def market_strategist(state):
+def strategist(state):
     """
     
     """
     
-    print(colored(f"\n---MARKET STRATEGIST---", 'green'))
+    print(colored(f"\n---BRAND STRATEGIST---", 'green'))
     market_research = state["market_research"]
     product = state["product"]
     
 
     # summary generation
-    marketing_strategist_agent= marketing_strategist_chain.invoke({"market_researcher_agent": market_research, "product": product})
-    print(marketing_strategist_agent)
-    target_audience= marketing_strategist_agent['Potential target audience']
+    brand_strategist_agent=  brand_strategist_chain.invoke({"market_researcher_agent": market_research, "product": product})
+    print( brand_strategist_agent)
+    #target_audience=  brand_strategist_agent['Potential target audience']
     
-   
-    return { "marketing_strategy": marketing_strategist_agent, "target_audience":target_audience}
+    return { "brand_strategy":  brand_strategist_agent}
 
 
 
-## decide which audience to target
-
-def human_in_loop(state):
-    """
-    A function to select the target audience.
-    """
-
-    print(colored(f"\n---SELECT AUDIENCE ---", 'green'))
-
-    target_audience = state["target_audience"]
-
-    
-    
-    one = target_audience[0]
-    two = target_audience[1]
-    three = target_audience[2]
-    
-    input_msg = (
-        f"Choose one number:\n 1. {one}\n\n  2. {two}\n\n  3. {three}\n"
-    )
-
-    selected_audience = input(input_msg)
-    
-    
-    
-
-    if selected_audience == '1':
-        return {"target_audience": one}
-    elif selected_audience == '2':
-        return {"target_audience": two}
-    elif selected_audience == '3':
-        return {"target_audience": three}
-    else:
-        return {"target_audience": one}
 
 
 
-def campaign_crafter(state):
+def branding_creator(state):
     """
     
     """
     
-    print(colored(f"\n---CAMPAIGN CRAFTER---\n\n", 'green'))
+    print(colored(f"\n---BRAND CRAFTER---\n\n", 'green'))
     market_research = state["market_research"]
-    marketing_strategy = state["marketing_strategy"]
-    target_audience= state["target_audience"]
+    brand_strategy = state["brand_strategy"]
+    web_summary =state["web_summary"]
+    google_search_summary = state["google_search_summary"] 
     product = state["product"]
     
-    print(colored(f"Target Audience:\n {target_audience}", 'blue'))
-
-    # summary generation
-    campaign_agent = campaign_chain.invoke({"product":product, "market_researcher_agent": market_research,"marketing_strategist_agent":marketing_strategy, "target_audience":target_audience})
-    print(campaign_agent)
-    
-    return { "campaign": campaign_agent}
-
-
-def landing_page_generator(state):
-    """
-    
-    """
-    
-    print(colored(f"\n---LANDING_PAGE_GENERATOR---", 'green'))
-    market_research = state["market_research"]
-    marketing_strategy = state["marketing_strategy"]
-
-    product = state["product"]
-    campaign_agent = state["campaign"]
     
 
     # summary generation
-    landing_page_agent = landing_page_chain.invoke({"product":product, "market_researcher_agent":market_research,"marketing_strategist_agent":marketing_strategy, "campaign_agent":campaign_agent})
-    
-    return { "landing_page": landing_page_agent}
+    branding_agent = branding_chain.invoke({"product":product, "google_summary": google_search_summary, "web_summary_agent":web_summary, "market_researcher_agent": market_research,"brand_strategist_agent":brand_strategy})
+
+    return { "product":product, "branding": branding_agent}
 
 
 
