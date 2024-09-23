@@ -24,7 +24,7 @@ def google_search(state):
     
     results=serper_search(f"branding stratergies for {product} ")
     print(results)
-    web_text = detect_and_scrape_url(results)
+    web_text = detect_and_scrape_url(results[200:1000])
     
     google_summary_agent= web_summary_chain.invoke({"web_text":web_text, "product": product})
     
