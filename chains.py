@@ -351,7 +351,7 @@ brand_strategist_prompt = PromptTemplate(
     Previous knowledge:
     {market_researcher_agent}\n
     
-    Branding Course Content: {brandign_rag_agent}\n
+    Branding Course Content: {branding_rag_agent}\n
     
     
 ## Your role
@@ -422,7 +422,7 @@ When picking an audience, be niche, be accurate, don't use broad useless audienc
 
     
     """,
-    input_variables=["market_researcher_agent", "product", "brandign_rag_agent"],
+    input_variables=["market_researcher_agent", "product", "branding_rag_agent"],
 )
 
 

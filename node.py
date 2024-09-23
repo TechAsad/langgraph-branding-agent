@@ -175,12 +175,13 @@ def strategist(state):
     print(colored(f"\n---BRAND STRATEGIST---", 'green'))
     market_research = state["market_research"]
     product = state["product"]
+    branding_rag_agent = state["branding_rag"]
     
     
     
 
     # summary generation
-    brand_strategist_agent=  brand_strategist_chain.invoke({"market_researcher_agent": market_research, "product": product})
+    brand_strategist_agent=  brand_strategist_chain.invoke({"market_researcher_agent": market_research, "product": product, "branding_rag_agent": branding_rag_agent})
     print( brand_strategist_agent)
     #target_audience=  brand_strategist_agent['Potential target audience']
     
