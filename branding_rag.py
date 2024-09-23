@@ -89,7 +89,7 @@ class RAGbot:
         
          
             
-            docs =vector_store.similarity_search(prompt, namespace="brandingcourse")
+            docs =vector_store.similarity_search(prompt, namespace="brandingcourse", k=8)
             
             
             response = chain.run(input_documents=docs, question=prompt)

@@ -194,11 +194,11 @@ def main():
     
 
     # Step 1: Gather Product Information
-    st.header("Enter Product Details")
+    st.header("Enter Startup Details")
 
     # Use session state to maintain input values across reruns
     product_name = st.text_input("Startup Name", value=st.session_state.get('product_name', ''))
-    product_service = st.text_input("Product or Service", value=st.session_state.get('product_service', ''))
+    #product_service = st.text_input("Product or Service", value=st.session_state.get('product_service', ''))
     industry = st.text_input("Industry", value=st.session_state.get('industry', ''))
     problem_solved = st.text_input("Problem Solved", value=st.session_state.get('problem_solved', ''))
     competition_website = st.text_input("Competition Website (optional)", value=st.session_state.get('competition_website', ''))
@@ -206,7 +206,7 @@ def main():
     # Check if the product details have changed
     details_changed = (
         product_name != st.session_state.get('product_name') or
-        product_service != st.session_state.get('product_service') or
+        #product_service != st.session_state.get('product_service') or
         industry != st.session_state.get('industry') or
         problem_solved != st.session_state.get('problem_solved') or
         competition_website != st.session_state.get('competition_website')
@@ -214,14 +214,13 @@ def main():
 
     # Validate the input
     if st.button("GENERATE"):
-        if not (product_name and product_service and industry and problem_solved):
+        if not (product_name and industry and problem_solved):
             st.error("Please provide all required information.")
         else:
             # Store product details in session state
             product_details = f"""
             Product Details:
             - Startup Name: {product_name}
-            - Product or Service: {product_service}
             - Industry: {industry}
             - Problem Solved: {problem_solved}
             - Competition Website: {competition_website}
@@ -231,7 +230,6 @@ def main():
             st.session_state.update({
                 "product": product_details,
                 "product_name": product_name,
-                "product_service": product_service,
                 "industry": industry,
                 "problem_solved": problem_solved,
                 "competition_website": competition_website
@@ -251,7 +249,7 @@ def main():
                 st.success("Already Generated")
 
             # Display product details and branding
-            st.subheader(":blue[PRODUCT DETAILS]")
+            st.subheader(":blue[COMPANY DETAILS]")
             st.write(st.session_state["product"])
 
             if "branding" in st.session_state:
@@ -270,85 +268,6 @@ def main():
             )
 
 
-
-
-def main2():
-    st.title("Branding Agent")
-
-    # Step 1: Gather Product Information
-    st.header("Enter Product Details")
-
-    # Use session state to maintain input values across reruns
-    product_name = st.text_input("Startup Name", value=st.session_state.get('product_name', ''))
-    product_service = st.text_input("Product or Service", value=st.session_state.get('product_service', ''))
-    industry = st.text_input("Industry", value=st.session_state.get('industry', ''))
-    problem_solved = st.text_input("Problem Solved", value=st.session_state.get('problem_solved', ''))
-    competition_website = st.text_input("Competition Website", value=st.session_state.get('competition_website', ''))
-
-    # Validate the input
-    if st.button("GENERATE"):
-        if not (product_name and product_service and industry and problem_solved and competition_website):
-            st.error("Please provide all required information.")
-        else:
-            # Store product details in session state
-            product_details = f"""
-            Product Details:
-            - Startup Name: {product_name}
-            - Product or Service: {product_service}
-            - Industry: {industry}
-            - Problem Solved: {problem_solved}
-            - Competition Website: {competition_website}
-            """
-
-            # Update session state to remember inputs and product details
-            st.session_state.update({
-                "product": product_details,
-                "product_name": product_name,
-                "product_service": product_service,
-                "industry": industry,
-                "problem_solved": problem_solved,
-                "competition_website": competition_website
-            })
-            if "product" in st.session_state:
-                st.subheader(":blue[PRODUCT DETAILS]")
-                st.write(st.session_state["product"])
-            if "branding" in st.session_state:
-                st.subheader(":blue[BRANDING]")
-                st.write(st.session_state["branding"])
-
-                # Display product details
-                #st.subheader(":blue[PRODUCT DETAILS]")
-                #st.write(st.session_state["product"])
-            else:
-                # Simulate branding generation using app.invoke (replace with actual function)
-                with st.spinner(text="Generating, Please Wait!"):
-                    inputs = {"product": st.session_state["product"]}
-                    output = app.invoke(inputs)  # Replace with actual invoke logic
-                    generated_branding = output['branding']
-
-                    # Store branding in session state
-                    st.session_state["branding"] = generated_branding
-
-                    # Display branding output
-                    #st.subheader(":blue[BRANDING]")
-                    #st.write(st.session_state["branding"])
-
-                    # Option to download branding details
-                    
-        # Ensure product details and branding persist even if the user downloads the file
-    
-
-        
-            
-            def prepare_download(outputs):
-                            return outputs
-
-            st.download_button(
-                label="Download Branding Strategy",
-                data=prepare_download(st.session_state["branding"]),
-                file_name=f"{product_name}_Branding.txt",
-                mime="text/plain"
-            )
 
 
 # Run the app
