@@ -22,7 +22,7 @@ praw==7.7.1
 fuzzywuzzy==0.18.0
 
 streamlit==1.31.1
-ollama==0.2.1
+
 beautifulsoup4==4.12.3
 termcolor==2.4.0
 
@@ -47,7 +47,7 @@ pikepdf
 
 numpy==1.26.3
 
-openai==1.8.0
+
 
 pdf2image==1.17.0
 
