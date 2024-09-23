@@ -10,6 +10,7 @@ workflow.add_node("subreddit_to_search", subreddit_to_search)  #
 workflow.add_node("subreddit_selector",subreddit_selector) 
 workflow.add_node("web_summarizer",web_summarizer) # 
 workflow.add_node("market_researcher", market_researcher)
+workflow.add_node("branding_rag_search", branding_rag_search)
 
 workflow.add_node("strategist", strategist)  # 
 
@@ -27,7 +28,9 @@ workflow.add_edge("subreddit_to_search","subreddit_selector")
 
 workflow.add_edge("subreddit_selector","web_summarizer")
 workflow.add_edge("web_summarizer","market_researcher")
-workflow.add_edge("market_researcher","strategist")
+workflow.add_edge("market_researcher","branding_rag_search")
+
+workflow.add_edge("branding_rag_search", "strategist")
 
 workflow.add_edge("strategist", "branding_creator")
 

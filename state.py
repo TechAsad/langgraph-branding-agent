@@ -21,6 +21,7 @@ class GraphState(TypedDict):
     web_summary: str
 
     market_research: str
-    brand_strategy: dict
+    branding_rag: str
+    brand_strategy: str
     branding: str
    

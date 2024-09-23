@@ -6,7 +6,7 @@ from chains import *
 from tools import * #reddit scraper and commeent claner 
 
 
-
+from branding_rag import RAGbot
     
     
  
@@ -141,6 +141,31 @@ def market_researcher(state):
     return { "market_research": market_researcher_agent}
 
 
+def branding_rag_search(state):
+    
+    """
+    
+    """
+    
+    print(colored(f"\n---BRANDIN RAG---", 'green'))
+    
+    product = state["product"]
+    market_research = state["market_research"]
+    
+   
+    
+
+    # summary generation
+    branding_rag_agent=  branding_rag_chain.invoke({"market_researcher_agent": market_research, "product": product})
+    branding_rag = RAGbot.run(branding_rag_agent)
+    
+    print( branding_rag)
+    #target_audience=  brand_strategist_agent['Potential target audience']
+    
+    return { "branding_rag":  branding_rag_agent}
+
+  
+
 
 def strategist(state):
     """
@@ -150,6 +175,8 @@ def strategist(state):
     print(colored(f"\n---BRAND STRATEGIST---", 'green'))
     market_research = state["market_research"]
     product = state["product"]
+    
+    
     
 
     # summary generation

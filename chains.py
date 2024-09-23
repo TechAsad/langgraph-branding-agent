@@ -297,6 +297,49 @@ market_researcher_chain = market_researcher_prompt | llm | StrOutputParser()
 
 
 
+
+branding_rag_prompt = PromptTemplate(
+    template="""
+    ## My goal
+
+I'm looking for two search quries to search through vector store:
+
+Company details: \n“{product} ”\n
+
+Market Research:
+    {market_researcher_agent}\n
+
+
+
+## Your role
+
+You are a branding agent with knowledge about branding for new startups.
+
+## Your mission
+
+You need help to gather more knowledge about brand strategies and other 
+instruction which you do not know. You have been given market research and company information. you shoulld write two queries to search from branding course that is 
+saved in a vector store. 
+
+only write two search quries and no preamble or explanation.
+
+
+... ]
+
+
+
+
+   
+    """,
+    input_variables=["market_researcher_agent", "product"],
+)
+
+
+branding_rag_chain = branding_rag_prompt | llm | StrOutputParser()
+
+
+
+
 ### Brand Strategist Chain
 
 
@@ -308,20 +351,23 @@ brand_strategist_prompt = PromptTemplate(
     Previous knowledge:
     {market_researcher_agent}\n
     
+    Branding Course Content: {brandign_rag_agent}\n
+    
     
 ## Your role
 
-You are a marketing strategist with a deep understanding of copywriting, psychological behaviors and Meta advertising.
+You are a brand strategist with a deep understanding of copywriting, psychological behaviors and Meta advertising.
 You know perfectly the market analysis and advertising principles from 'Breakthrough Advertising' by Eugene M. Schwartz, and from David Ogilvy.
 
 ## Context
 
 I’m in the process of validating a product idea using a Meta advertising campaign as well as a landing page.
 At this stage, I only have very little knowledge about who is the customer and what do they really need., only the information previously mentioned in our conversation.
+And I have taken a course for Company Branding.
 
 ## Your mission
 
-Your mission is to help me to craft the both the landing page and the advertising campaign by providing them with different potential target audiences, marketing angles and hooks, following the definitions and process described
+Your mission is to help me to craft the both the branding campaign by providing them with different potential target audiences, marketing angles and hooks, following the definitions and process described
 
 
 ## Methodology: Think step by step
@@ -345,13 +391,6 @@ Here is the structure to follow:
 
 (Give it a nice but self explanatory name)
 
-## Colors
-
-(The background is going to be white, pick 1 HEX colors that fit the product, that should create a strong constrast to use on the call to action)
-
-## Font
-
-(Pick 2 Google fonts, one for heading, distinctive enough to create a real identity, and another more classic for paragraphs)
 
 ## Product
 
@@ -381,10 +420,9 @@ List 3 potenial niches/target audience for the product. From most important to l
 
 When picking an audience, be niche, be accurate, don't use broad useless audiences like "busy professional" or "health enthusiast", we want to address a specific part of a big market to solve a specific problem.
 
-    respond in plain english, do not use brackets.
     
     """,
-    input_variables=["market_researcher_agent", "product"],
+    input_variables=["market_researcher_agent", "product", "brandign_rag_agent"],
 )
 
 
@@ -397,11 +435,11 @@ branding_prompt = PromptTemplate(
     
     product: {product}\n
     
-    competition website: {web_summary_agent}
+    competition website: {web_summary_agent}\n
     
-    About this domain: {google_summary}
+    About this domain: {google_summary}\n
     
-    
+    Brand Strategy: {brand_strategist_agent}\n
     
     Previous knowledge:
     {market_researcher_agent}\n
